@@ -1,0 +1,139 @@
+:root {
+  --espresso: #1f1311;
+  --espresso-light: #3a2420;
+  --crema: #f3e3cf;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(ellipse at 50% 40%, var(--espresso-light) 0%, var(--espresso) 70%);
+  color: var(--crema);
+  overflow: hidden;
+}
+
+.stage {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 5vh, 3rem);
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ---------- Corazón de papel ---------- */
+
+#heart {
+  width: min(72vw, 360px);
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.45));
+}
+
+.heart {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  /* empieza a latir cuando termina de armarse */
+  animation: beat 1.9s ease-in-out 3.2s infinite;
+}
+
+.piece {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+  animation: assemble 1.6s cubic-bezier(0.22, 1, 0.36, 1) var(--delay) both;
+}
+
+/* Cada trozo vuela desde un lugar al azar, gira como papel y se acomoda */
+@keyframes assemble {
+  0% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.3);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  65% {
+    /* aleteo: el papel "se da vuelta" antes de apoyarse */
+    transform: translate(calc(var(--dx) * 0.12), calc(var(--dy) * 0.12))
+      rotate(calc(var(--rot) * 0.12)) scale(1.08, 0.82);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes beat {
+  0%, 100% { transform: scale(1); }
+  14%      { transform: scale(1.06); }
+  28%      { transform: scale(1); }
+  42%      { transform: scale(1.04); }
+  70%      { transform: scale(1); }
+}
+
+/* ---------- Mensaje ---------- */
+
+#message {
+  font-family: "Caveat", "Segoe Script", "Brush Script MT", cursive;
+  font-weight: 600;
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  line-height: 1.15;
+  text-align: center;
+  color: var(--crema);
+  max-width: 14em;
+}
+
+#message .word {
+  display: inline-block;
+  white-space: nowrap;
+  margin-right: 0.28em;
+}
+
+#message .letter {
+  display: inline-block;
+  opacity: 0;
+  animation: write 0.6s ease-out var(--delay) forwards;
+}
+
+@keyframes write {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em) rotate(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* ---------- Accesibilidad ---------- */
+
+.stage:focus-visible {
+  outline: 2px dashed var(--crema);
+  outline-offset: -8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .piece,
+  #message .letter {
+    animation-duration: 0.01s;
+    animation-delay: 0s;
+  }
+  .heart {
+    animation: none;
+  }
+}
